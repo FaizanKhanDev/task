@@ -75,6 +75,21 @@ class TaskRepository {
         }
     }
 
+    public static async getTaskListByUserService(yesterday: Date, isCompleted: boolean): Promise<any> {
+        try {
+            let task = await prisma.tasks.findMany({
+                where: {
+                    isCompleted: false,
+                    createdAt: {
+                        gte: yesterday,
+                    },
+                }
+            })
+        } catch (error: any) {
+            throw new Error("Failed to GET task LIST" + error.message);
+        }
+
+    }
 
 
     /* (================) ||  GET LIST  OF TASK By ADMIN || (===============) */

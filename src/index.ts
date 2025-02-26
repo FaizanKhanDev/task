@@ -10,6 +10,7 @@ import './module-alias'
 import path from 'path';
 import setupSocketServer from './socketIo/socketIo';
 import bodyParser from 'body-parser';
+import taskReminderJob from './cronJobs';
 
 
 /* ====== Config ====== */
@@ -33,6 +34,8 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 app.use(cors());
+
+taskReminderJob.start();
 
 
 app.use(express.urlencoded({ extended: true }));
