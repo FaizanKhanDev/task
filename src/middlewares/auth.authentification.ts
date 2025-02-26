@@ -2,8 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import * as dotenv from "dotenv";
 import { Decrypt } from "../helpers/index";
 dotenv.config();
-import { AuthRequest } from '../types/interfaces';
-
+import { AuthRequest } from "~/interfaces";
 
 export const authentification = async (
   req: AuthRequest,

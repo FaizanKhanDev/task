@@ -26,11 +26,11 @@ class TaskRepository {
     /* (================) ||  UPDATE  TASK || (===============) */
     public static async updateTaskRepository(userId: number, id: number, title: string, description: string, isCompleted: boolean) {
         try {
-            let task = await prisma.tasks.updae({
+            let task = await prisma.tasks.update({
                 where: {
                     id: id,
                     userId: userId
-                }
+                },
                 data: {
                     title: title,
                     description: description,

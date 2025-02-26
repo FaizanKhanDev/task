@@ -87,7 +87,7 @@ export default class AuthRepository {
     }
 
 
-    
+
 
     /* ========== GET USER BY ID ========= */
     public static async getUserById(id: number) {
@@ -99,8 +99,6 @@ export default class AuthRepository {
                 },
                 include: {
                     verification: true,
-                    location: true,
-                    userProfile: true
                 }
             });
             if (!user) {

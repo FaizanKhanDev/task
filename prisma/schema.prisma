@@ -1,405 +1,36 @@
 datasource db {
   provider = "postgresql"
   url = env("POSTGRES_PRISMA_URL")
-  schemas  = ["auth", "public", "advertisement", "chat"]
+  schemas  = ["auth", "public"]
 }
 generator client {
   provider = "prisma-client-js"
   previewFeatures = ["multiSchema"]
 
 }
-model Advertisements {
-    id              Int                           @id @default(autoincrement())
-    isExpired       Boolean                       @default(false)
-    startDate       DateTime?                     @default(now())
-    expiredOn       DateTime?
-    listingId       Int                           @unique
-    customizationId Int?                          @unique
-    listing         Listings?                     @relation(fields: [listingId], references: [id], onDelete: Cascade)
-    customization   AdvertisementsCustomizations? @relation(fields: [customizationId], references: [id], onDelete: Cascade)
-    createdAt       DateTime                      @default(now())
-    updatedAt       DateTime                      @default(now())
-
-    @@schema("advertisement")
-}
-
-model AdvertisementsCustomizations {
-    id              Int             @id @default(autoincrement())
-    backgroundColor String?
-    font            String?
-    banner          String?
-    advertisement   Advertisements? @relation
-
-    @@schema("advertisement")
-}
-
-model AdvertisementRetrievings {
-    id        Int      @id @default(autoincrement())
-    listingId Int
-    userId    Int
-    type      String
-    orderBy   String
-    skip      Int
-    retrievingType RetrievingType? @default(ADVERTISEMENTS)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
-    @@schema("advertisement")
-}
-
-model UserAdvertisementRetrievings {
-    id             Int            @id @default(autoincrement())
-    userId         Int            
-    count          Int
-    createdAt      DateTime       @default(now())
-    updatedAt      DateTime       @default(now())
-    type           String
-    skip           Int
-    retrievingType RetrievingType? @default(ADVERTISEMENTS)
-    orderBy        String
-
-    @@schema("advertisement")
-}
-
-enum RetrievingType {
-    ADVERTISEMENTS
-    LISTINGS
-    @@schema("advertisement")
-
-}
-
-model Metrics {
-    id          Int       @id @default(autoincrement())
-    impressions Int
-    clicks      Int
-    listings    Listings? @relation
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @default(now())
-
-    @@schema("advertisement")
-}
-
-model Rooms {
-    id            Int            @id @default(autoincrement())
-    listingId    Int
-    name          String
-    listing       Listings       @relation(fields: [listingId], references: [id], onDelete: Cascade)
-    profile       String
-    lastMessageId Int?
-    lastMessage   RoomMessages?  @relation("LastMessage", fields: [lastMessageId], references: [id])
-    members       RoomMembers[]
-    roomMessages  RoomMessages[]
-    createdAt     DateTime       @default(now())
-    updatedAt     DateTime       @default(now())
-
-    @@unique([lastMessageId])
-    @@schema("chat")
-}
-
-model RoomMembers {
-    id        Int      @id @default(autoincrement())
-    roomId    Int
-    userId    Int
-    room      Rooms    @relation(fields: [roomId], references: [id], onDelete: Cascade)
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    role      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
-
-    @@unique([roomId, userId])
-    @@schema("chat")
-}
-
-model RoomMessages {
+model Tasks {
     id          Int      @id @default(autoincrement())
-    messageId   Int      @unique
-    messages    Messages @relation(fields: [messageId], references: [id], onDelete: Cascade)
-    roomId      Int
-    room        Rooms    @relation(fields: [roomId], references: [id], onDelete: Cascade)
-    lastMessage Rooms[]  @relation("LastMessage")
-    status    MessagStatus @default(NOTSEEN)
-    sentAt    DateTime     @default(now())
-    createdAt DateTime     @default(now())
-    updatedAt DateTime     @default(now())
-
-    @@unique([messageId, roomId])
-    @@schema("chat")
-}
-
-model Messages {
-    id           Int           @id @default(autoincrement())
-    messageBody  String
-    userId       Int
-    user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-    RoomMessages RoomMessages?
-    createdAt    DateTime      @default(now())
-    updatedAt    DateTime      @default(now())
-
-    @@schema("chat")
-}
-
-enum MessagStatus {
-    SEEN
-    NOTSEEN
-
-    @@schema("chat")
-}
-
-model Connection {
-    id         Int      @id @default(autoincrement())
-    senderId   Int
-    receiverId Int
-    sender     User     @relation("SenderConnections", fields: [senderId], references: [id], onDelete: Cascade)
-    receiver   User     @relation("ReceiverConnections", fields: [receiverId], references: [id], onDelete: Cascade)
-    isAccepted Boolean  @default(false)
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
-
-    @@schema("public")
-}
-
-model Files {
-    id         Int       @id @default(autoincrement())
-    url        String
-    fileType   FileType  @default(IMAGE)
-    createdAt  DateTime  @default(now())
-    updatedAt  DateTime  @default(now())
-    listings   Listings[] @relation("ListingsFiles")
-    listingVideo Listings? @relation("ListingsVideo")
-    @@schema("public")
-}
-enum FileType {
-    IMAGE
-    VIDEO
-    @@schema("public")
-}
-
-model Listings {
-    id             Int             @id @default(autoincrement())
-    title          String
-    description    String
-    price          Float
-    images         Files[]         @relation("ListingsFiles")
-    videoId        Int?            @unique
-    video          Files?          @relation("ListingsVideo", fields: [videoId], references: [id], onDelete: Cascade)
-    location       Location        @relation(fields: [locationId], references: [id], onDelete: Cascade)
-    locationId     Int             @unique
-    createdAt      DateTime        @default(now())
-    updatedAt      DateTime        @default(now())
-    userId         Int
-    metricsId      Int?            @unique
-    user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-    metrics        Metrics?        @relation(fields: [metricsId], references: [id], onDelete: Cascade)
-    advertisements Advertisements? @relation
-    category       String?
-    age            Float?
-    gender         genderType      @default(MALE)
-    interests      String[]
-    ageType        ageType         @default(DAYS)
-    meetings       Meetings[]
-    wishList       Wishlist[]
-    chatRooms      Rooms[]
-    isSoldOut      Boolean         @default(false)
-
-    @@schema("public")
-}
-
-enum genderType {
-    MALE
-    FEMALE
-    OTHER
-
-    @@schema("public")
-}
-
-enum ageType {
-    DAYS
-    WEEKS
-    MONTHS
-    YEARS
-
-    @@schema("public")
-}
-
-model UserAction {
-    id         Int        @id @default(autoincrement())
-    userId     Int
-    listingId  Int
-    actionType ActionType @default(CLICKS)
-    createdAt  DateTime   @default(now())
-
-    @@schema("public")
-}
-
-enum ActionType {
-    CLICKS
-    IMPRESSIONS
-    WISHLISTS
-    CARTS
-
-    @@schema("public")
-}
-
-model Categories {
-    id        Int      @id @default(autoincrement())
-    name      String   @unique
-    imageUrl  String?
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
-
-    @@schema("public")
-}
-
-model Wishlist {
-    id        Int      @id @default(autoincrement())
-    listingId Int
-    listing   Listings @relation(fields: [listingId], references: [id], onDelete: Cascade)
-    userId    Int
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
-
-    @@schema("public")
-}
-
-model ListingsRetrievings {
-    id        Int      @id @default(autoincrement())
-    listingId Int
-    userId    Int
-    type      String
-    orderBy   String
-    skip      Int
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
-    @@schema("public")
-
-}
-
-model Location {
-    id        Int       @id @default(autoincrement())
-    geolat    Float
-    geolong   Float
-    address   String
-    listing   Listings? @relation
-    user      User?     @relation
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @default(now())
-
-    @@schema("public")
-}
-
-model Meetings {
-    id          Int      @id @default(autoincrement())
-    date        DateTime @default(now())
-    customerId  Int
-    sellerId    Int
-    listingId   Int
-    seller      User     @relation(name: "sellerMeetings", fields: [sellerId], references: [id], onDelete: Cascade)
-    customer    User     @relation(name: "customerMeetings", fields: [customerId], references: [id], onDelete: Cascade)
-    listings    Listings @relation(fields: [listingId], references: [id], onDelete: Cascade)
-    status      Status   @default(PENDING)
+    title       String
+    description String
+    isCompleted Boolean  @default(false)
+    userId      Int
+    user        User     @relation(fields: [userId], references: [id])
     createdAt   DateTime @default(now())
-    updatedAt   DateTime @default(now())
-    @@schema("public")
-}
-
-enum Status {
-    ACCEPTED
-    REJECTED
-    PENDING
-    COMPLETED
-    CANCELLED
-    @@schema("public")
-}
-
-model UserProfile {
-    id                            Int          @id @default(autoincrement())
-    subscriptionType              ProfileTypes @default(STANDARD)
-    postImagesLimit               Int
-    postAboutTextLimit            Int
-    freeAdAfterLimit              Int
-    subscriptionPrice             Float
-    listingCost                   Float
-    adCost                        Float
-    hasFreeAdd                    Boolean
-    hasVideo                      Boolean
-    hasSocialMediaLinks           Boolean
-    userId                        Int          @unique
-    user                          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
-    totalAdsCount                 Int
-    adsCountAfterLastSubscription Int
-    subscriptionDate              DateTime     @default(now())
-    expiryDate                    DateTime
-    createdAt                     DateTime     @default(now())
-    updatedAt                     DateTime     @default(now())
-    @@schema("public")
-}
-
-model ProfileType {
-    id              Int          @id @default(autoincrement())
-    subscriptionType    ProfileTypes @default(STANDARD)
-    postImagesLimit     Int
-    postAboutTextLimit  Int
-    freeAdAfterLimit    Int
-    subscriptionPrice   Float
-    listingCost         Float
-    adCost              Float
-    hasFreeAdd          Boolean
-    hasVideo            Boolean
-    hasSocialMediaLinks Boolean
-    createdAt       DateTime     @default(now())
-    updatedAt       DateTime     @default(now())
-    @@schema("public")
-}
-
-enum ProfileTypes {
-    STANDARD
-    ADVANCE
-    ENTERPRISE
-    @@schema("public")
-}
-
-
-
-model ProfileReviews {
-    id           Int      @id @default(autoincrement())
-    sellerId     Int
-    customerId   Int
-    rating_value Float
-    seller       User     @relation(name: "sellerProfileReviews", fields: [sellerId], references: [id], onDelete: Cascade)
-    customer     User     @relation(name: "customerReviews", fields: [customerId], references: [id], onDelete: Cascade)
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
     @@schema("public")
 }
 
 model User {
-    id                  Int               @id @default(autoincrement())
-    email               String            @unique
-    fullName            String?
-    password            String
-    role                Role              @default(BUYER)
-    sellerMeetings      Meetings[]        @relation("sellerMeetings")
-    customerMeetings    Meetings[]        @relation("customerMeetings")
-    customerReview      ProfileReviews[]  @relation("customerReviews")
-    sellerProfileReview ProfileReviews[]  @relation("sellerProfileReviews")
-    verification        UserVerification?
-    userProfile         UserProfile?
-    listings            Listings[]
-    locationId          Int?              @unique
-    location            Location?         @relation(fields: [locationId], references: [id])
-    wishList            Wishlist[]
-    messages            Messages[]
-    roomMembers         RoomMembers[]
-    averageRating       Float?
-    url                 String?           @default("https://api.Task.ca/api/v1/bucket/files/1726049013194-743688994.png")
-    deviceToken         String?
-    phoneNumber         String?
-    coverImage          String            @default("https://api.Task.ca/api/v1/bucket/files/1726049012932-323188758.png")
-    createdAt           DateTime          @default(now())
-    updatedAt           DateTime          @updatedAt
-    sentConnections     Connection[]      @relation("SenderConnections")
-    receivedConnections Connection[]      @relation("ReceiverConnections")
+    id           Int               @id @default(autoincrement())
+    email        String            @unique
+    fullName     String?
+    password     String
+    role         Role              @default(USER)
+    verification UserVerification?
+    createdAt    DateTime          @default(now())
+    updatedAt    DateTime          @updatedAt
+    task         Tasks[]
 
     @@schema("auth")
 }
@@ -416,9 +47,8 @@ model UserVerification {
 }
 
 enum Role {
-    BUYER
+    USER
     ADMIN
-    SELLER
 
     @@schema("auth")
 }
