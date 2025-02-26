@@ -1,0 +1,56 @@
+model User {
+    id                  Int               @id @default(autoincrement())
+    email               String            @unique
+    fullName            String?
+    password            String
+    role                Role              @default(BUYER)
+    sellerMeetings      Meetings[]        @relation("sellerMeetings")
+    customerMeetings    Meetings[]        @relation("customerMeetings")
+    customerReview      ProfileReviews[]  @relation("customerReviews")
+    sellerProfileReview ProfileReviews[]  @relation("sellerProfileReviews")
+    verification        UserVerification?
+    userProfile         UserProfile?
+    listings            Listings[]
+    locationId          Int?              @unique
+    location            Location?         @relation(fields: [locationId], references: [id])
+    wishList            Wishlist[]
+    messages            Messages[]
+    roomMembers         RoomMembers[]
+    averageRating       Float?
+    url                 String?           @default("https://api.pupify.ca/api/v1/bucket/files/1726049013194-743688994.png")
+    deviceToken         String?
+    phoneNumber         String?
+    coverImage          String            @default("https://api.pupify.ca/api/v1/bucket/files/1726049012932-323188758.png")
+    createdAt           DateTime          @default(now())
+    updatedAt           DateTime          @updatedAt
+    sentConnections     Connection[]      @relation("SenderConnections")
+    receivedConnections Connection[]      @relation("ReceiverConnections")
+
+    @@schema("auth")
+}
+
+model UserVerification {
+    id                Int                @id @default(autoincrement())
+    userId            Int                @unique
+    resetOtp          Int?
+    resetOtpExpiresAt DateTime?
+    isEmailVerified   VerificationStatus @default(NOT_VERIFIED)
+    user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@schema("auth")
+}
+
+enum Role {
+    BUYER
+    ADMIN
+    SELLER
+
+    @@schema("auth")
+}
+
+enum VerificationStatus {
+    VERIFIED
+    NOT_VERIFIED
+
+    @@schema("auth")
+}

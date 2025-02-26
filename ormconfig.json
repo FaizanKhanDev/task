@@ -1,0 +1,27 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "chiragmehta900",
+    "password": "xxxxxxxxxxxxxxxxxxxxxxxx",
+    "database": "localhost",
+    "synchronize": true,
+    "logging": true,
+    "ssl": {
+      "rejectUnauthorized": false
+    },
+    "entities": [
+      "dist/entity/**/*.js"
+    ],
+    "migrations": [
+      "dist/migration/**/*.js"
+    ],
+    "subscribers": [
+      "dist/subscriber/**/*.js"
+    ],
+    "cli": {
+      "entitiesDir": "./src/entities",
+      "migrationsDir": "./src/migrations",
+      "subscribersDir": "./src/subscriber"
+    }
+  }
