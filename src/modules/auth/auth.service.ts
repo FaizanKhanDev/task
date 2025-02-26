@@ -61,7 +61,7 @@ class AuthService {
                 AuthRepository.findByEmail(email)
 
 
-            const user = findUserPromise;
+            const user: any = findUserPromise;
             if (!user || !user.verification) {
                 return {
                     success: false,
@@ -85,6 +85,8 @@ class AuthService {
                 throw new Error("Email is not verified");
             }
 
+            delete user?.verification
+            delete user.password
             /* ========== Compare Password ========= */
 
             return user;
@@ -121,7 +123,7 @@ class AuthService {
                 }
             }
             const updatedUser = await AuthRepository.verfiedTheUser(user.id);
-            return user;
+            return updatedUser;
         } catch (error: any) {
             throw new Error(`Failed to verify email: ${error.message}`);
         }

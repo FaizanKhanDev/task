@@ -59,6 +59,24 @@ class TaskRepository {
 
         }
     }
+    /* (================) ||  find  TASK || (===============) */
+    public static async getTaskByIdRepository(id: number) {
+        try {
+            let task = await prisma.tasks.findUnique
+                ({
+                    where: {
+                        id: id,
+                    }
+                });
+            return task;
+        } catch (error: any) {
+            throw new Error("Failed to DELETE task" + error.message);
+
+        }
+    }
+
+
+
     /* (================) ||  GET LIST  OF TASK By ADMIN || (===============) */
     public static async getTaskListByAdminRepository(page: number, limit: number) {
         try {

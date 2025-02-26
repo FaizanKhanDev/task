@@ -31,6 +31,11 @@ class TaskServices {
     /* (================) ||  DELETE TASK || (===============) */
     public static async deleteTaskService(id: number) {
         try {
+            let findTask = await TaskRepository.getTaskByIdRepository(id);
+            if (!findTask) {
+                throw new Error("Task not found");
+            }
+
             let result = await TaskRepository.deleteTaskRepository(id);
             return result;
         } catch (error: any) {
