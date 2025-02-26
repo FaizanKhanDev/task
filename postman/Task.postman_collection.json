@@ -1,0 +1,290 @@
+{
+	"info": {
+		"_postman_id": "788420fa-e9b5-4414-828e-bf899aab2b8d",
+		"name": "Task",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25062151",
+		"_collection_link": "https://galactic-spaceship-136843.postman.co/workspace/a3befb55-0d14-4da4-91aa-f8f42072c8fa/collection/25062151-788420fa-e9b5-4414-828e-bf899aab2b8d?action=share&source=collection_link&creator=25062151"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Create Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\":\"user\",\r\n    \"email\": \"user@gmail.com\",\r\n    \"password\":\"Aa123456\",\r\n    \"role\":\"USER\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localbaseUrl}}/api/v1/auth/register",
+							"host": [
+								"{{localbaseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"user@gmail.com\",\r\n    \"password\":\"Aa123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localbaseUrl}}/api/v1/auth/login",
+							"host": [
+								"{{localbaseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Veriy Email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"otp\":855750,\r\n    \"email\":\"user@gmail.com\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localbaseUrl}}/api/v1/auth/verified-email",
+							"host": [
+								"{{localbaseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"verified-email"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "task",
+			"item": [
+				{
+					"name": "create new task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\":\"abc\",\r\n  \"description\":\"abc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localbaseUrl}}/api/v1/task/create-new-task",
+							"host": [
+								"{{localbaseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"task",
+								"create-new-task"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"title\": \"abc\",\r\n    \"description\": \"abc\",\r\n    \"isCompleted\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localbaseUrl}}/api/v1/task/update-task",
+							"host": [
+								"{{localbaseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"task",
+								"update-task"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete task",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localbaseUrl}}/api/v1/task/delete-task/1",
+							"host": [
+								"{{localbaseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"task",
+								"delete-task",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get task list by admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\":\"user\",\r\n    \"email\": \"user@gmail.com\",\r\n    \"password\":\"Aa123456\",\r\n    \"role\":\"USER\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localbaseUrl}}/api/v1/task/get-task-list-by-admin",
+							"host": [
+								"{{localbaseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"task",
+								"get-task-list-by-admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get task list by user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\":\"user\",\r\n    \"email\": \"user@gmail.com\",\r\n    \"password\":\"Aa123456\",\r\n    \"role\":\"USER\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localbaseUrl}}/api/v1/task/get-task-list-by-user",
+							"host": [
+								"{{localbaseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"task",
+								"get-task-list-by-user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
