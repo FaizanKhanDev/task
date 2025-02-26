@@ -20,8 +20,14 @@ class AuthService {
             /* -----    Hash Password     ----- */
             let hashedPassword = await Encrypt.encryptpass(password);
 
+
+
+            /* --- generate OTP ----* */
+            let otp = OTPGenerator.generateOTP();
+
+
             /* -----    Create User     ----- */
-            const newUser = await AuthRepository.createUser(email, hashedPassword, fullName, role);
+            const newUser = await AuthRepository.createUser(email, hashedPassword, fullName, role, otp);
             if (!newUser || !newUser.verification) {
                 return null;
             }
@@ -47,12 +53,12 @@ class AuthService {
 
 
     /* ========== Login ========= */
-    public static async login(identifier: string, password: string, isEmail: boolean): Promise<any> {
+    public static async login(email: string, password: string): Promise<any> {
         try {
             /* ========== Find User ========= */
 
             let findUserPromise = await
-                AuthRepository.findByEmail(identifier)
+                AuthRepository.findByEmail(email)
 
 
             const user = findUserPromise;
@@ -72,43 +78,10 @@ class AuthService {
             }
             // /* ====== Check is User Verified ====== */
             if (user.verification && user.verification.isEmailVerified != "VERIFIED") {
-                let generateOTP = await OTPGenerator.generateOTP();
-                let setOtp = await AuthRepository.setNewOtp(user.id, generateOTP);
-                if (!setOtp) {
-                    throw new Error(" Failed to send OTP ")
-                }
-                const html = `
-                    <div style="font-family: Helvetica, Arial, sans-serif; min-width: 1000px; overflow: auto; line-height: 1.6;">
-                        <div style="margin: 50px auto; width: 70%; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
-                            <div style="border-bottom: 2px solid #00466a; padding-bottom: 10px; margin-bottom: 20px;">
-                                <a href="" style="font-size: 1.6em; color: #00466a; text-decoration: none; font-weight: bold;">Task App</a>
-                            </div>
-                            <p style="font-size: 1.2em; margin-bottom: 20px;">Dear ${user.fullName},</p>
-                            <p style="font-size: 1.1em; margin-bottom: 20px;">Thank you for your interest in logging into Task App. To proceed, please verify your email address by using the OTP (One-Time Password) provided below. This step is necessary to complete your login process.</p>
-                            <h2 style="background: #00466a; color: #fff; padding: 15px; border-radius: 4px; text-align: center; font-size: 1.5em; margin: 0;">
-                                ${generateOTP}
-                            </h2>
-                            <p style="font-size: 1em; margin-top: 20px;">Please note that this OTP is valid for 15 minutes. If you did not attempt to log in, you may disregard this email.</p>
-                            <p style="font-size: 1em; margin-top: 20px;">If you have any questions or need further assistance, feel free to contact our support team.</p>
-                            <p style="font-size: 1em; margin-top: 20px;">Best regards,<br />The Task Team</p>
-                            <hr style="border: none; border-top: 1px solid #ddd; margin-top: 20px;" />
-                            <div style="float: right; padding: 8px 0; color: #aaa; font-size: 0.9em;">
-                                <p>Task App</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
 
-                console.log("generateOTP", JSON.stringify(generateOTP))
-
-
-                /* ----- SET OPTION FOR EMAIL SENDING -----*/
-                // let options = {
-                //     to: identifier,
-                //     subject: "Account Verfication Email",
-                //     html: html,
-                // }
-                // let sendOTPEmail = await EmailService.sendEmail(options)
+                /* --- need to sent OTP EMAIL ----*/
+                let otp = OTPGenerator.generateOTP();
+                let setNewOtp = AuthRepository.setNewOtp(user.id, otp);
                 throw new Error("Email is not verified");
             }
 
@@ -123,13 +96,6 @@ class AuthService {
 
     /* ========= generate token ========= */
     public static generateToken(user: any) {
-        let payload = {
-            id: user.id,
-            email: user.email,
-            fullName: user.fullName,
-            role: user.role,
-            deviceToken: user.deviceToken
-        }
         const token = Encrypt.generateToken(user);
         return token;
     }

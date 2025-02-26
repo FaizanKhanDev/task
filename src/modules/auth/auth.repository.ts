@@ -9,63 +9,27 @@ export default class AuthRepository {
         password: string,
         fullName: string,
         role: Role,
-        url: string | null,
-        deviceToken: string,
-        coverImage: any,
+        otp: number,
     ) {
         try {
-            let findProfileType = await prisma.profileType.findFirst({
-                where: {
-                    subscriptionType: "STANDARD",
-                }
-            });
-            /* === FInd Profile Type === */
-            if (!findProfileType) {
-                throw new Error("Default profile type 'STANDARD' not found or is not marked as default.");
-            }
 
-            let resetOtp = Math.floor(100000 + Math.random() * 900000);
+            console.log("otp", otp);
+
             const newUser = await prisma.user.create({
                 data: {
                     email,
                     password,
                     fullName,
                     role,
-                    url: url,
-                    coverImage: coverImage,
-                    deviceToken,
                     verification: {
                         create: {
-                            resetOtp: resetOtp,
+                            resetOtp: otp,
                             resetOtpExpiresAt: new Date(Date.now() + 3600000)
                         }
                     },
-                    ...(role != "ADMIN" && {
-                        userProfile: {
-                            create: {
-                                postImagesLimit: findProfileType.postImagesLimit,
-                                postAboutTextLimit: findProfileType.postAboutTextLimit,
-                                freeAdAfterLimit: findProfileType.freeAdAfterLimit,
-                                subscriptionPrice: findProfileType.subscriptionPrice,
-                                listingCost: findProfileType.listingCost,
-                                adCost: findProfileType.adCost,
-                                hasFreeAdd: findProfileType.hasFreeAdd,
-                                hasVideo: findProfileType.hasVideo,
-                                hasSocialMediaLinks: findProfileType.hasSocialMediaLinks,
-                                totalAdsCount: 0,
-                                adsCountAfterLastSubscription: 0,
-                                subscriptionDate: new Date(),
-                                expiryDate: new Date(Date.now() + 3600000),
-                                createdAt: new Date(),
-                                updatedAt: new Date(),
-                            }
-                        }
-                    })
                 },
                 include: {
                     verification: true,
-                    location: true,
-                    userProfile: true
                 }
             });
 
@@ -87,8 +51,6 @@ export default class AuthRepository {
                 },
                 include: {
                     verification: true,
-                    location: true,
-                    userProfile: true
                 }
             });
             if (!user) {
@@ -125,28 +87,7 @@ export default class AuthRepository {
     }
 
 
-    /* ========= Find User By Username ======== */
-    // public static async findByUsername(identifier: string) {
-    //     try {
-    //         const user = await prisma.user.findUnique({
-    //             where: {
-    //                 username: identifier
-    //             },
-    //             include: {
-    //                 verification: true,
-    //                 location: true
-    //             }
-    //         });
-    //         if (!user) {
-    //             return null;
-    //         }
-    //         return user;
-
-    //     } catch (error) {
-    //         console.log("Failed to find user: ", error);
-    //     }
-    // }
-
+    
 
     /* ========== GET USER BY ID ========= */
     public static async getUserById(id: number) {

@@ -61,7 +61,24 @@ class AuthController {
     /* ================ Login =============== */
     public static async login(req: Request, res: Response) {
         try {
-            
+            let { email, password } = req.body;
+            if (!email || !password) {
+                return res.status(400).json({
+                    status: "error",
+                    message: "All fields are required",
+                    data: []
+                });
+            }
+            let user = await AuthService.login(email, password);
+            if (user.status == 404) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            const token = AuthService.generateToken(user);
+            let responsePayload = {
+                ...user,
+                token: token,
+            }
+            return res.status(200).json({ data: responsePayload, status: "success", message: "Login successfully" });
         }
         catch (error: any) {
             return errorHandler(error as Error, req, res);
