@@ -3,23 +3,13 @@ import express from 'express';
 import dotenv from 'dotenv';
 import upload from './middlewares/upload.middlware';
 import { Request, Response } from 'express';
-import { AuthRoutes } from './routes/v1/authRoutes';
-import { UserRoutes } from './routes/v1/userRoutes';
-import { ProfileTypeRoutes } from './routes/v1/profileTypesRoutes';
-import { ListingsRoutes } from './routes/v1/listingsRoutes';
-import { ChatRoutes } from './routes/v1/chatRoutes';
+import { AuthRoutes } from './routes/v1/auth/auth.routes';
+import { UserRoutes } from './routes/v1/user';
 import cors from 'cors';
 import './module-alias'
-import { AdvertisementRoutes } from './routes/v1/advertisementRoutes';
-import { CategoryRoutes } from './routes/v1/categoriesRoutes';
-import { DashboardRoutes } from './routes/v1/dashboardRoutes';
-import { meetingRoutes } from './routes/v1/meetingRoutes';
-import { FileRoutes } from './routes/v1/fileRoutes';
 import path from 'path';
 import setupSocketServer from './socketIo/socketIo';
 import bodyParser from 'body-parser';
-import { StoresRoutes } from './routes/v1/stores';
-import { ConnectionRoutes } from './routes/v1/coonectionRoutes';
 
 
 /* ====== Config ====== */
@@ -86,16 +76,6 @@ app.get('/api/v1', (req, res) => {
 /* ================= Routes ================= */
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/user', UserRoutes);
-app.use('/api/v1/subscriptions', ProfileTypeRoutes);
-app.use('/api/v1/advertisements', AdvertisementRoutes);
-app.use('/api/v1/listings', ListingsRoutes);
-app.use('/api/v1/chats', ChatRoutes);
-app.use('/api/v1/categories', CategoryRoutes);
-app.use('/api/v1/dashboard', DashboardRoutes);
-app.use('/api/v1/meetings', meetingRoutes);
-app.use('/api/v1/bucket', FileRoutes)
-app.use('/api/v1/stores', StoresRoutes)
-app.use('/api/v1/connection', ConnectionRoutes)
 
 /* ====== Not Found Routes ====== */
 app.get("*", (req: Request, res: Response) => {

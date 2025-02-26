@@ -1,30 +1,12 @@
 model User {
-    id                  Int               @id @default(autoincrement())
-    email               String            @unique
-    fullName            String?
-    password            String
-    role                Role              @default(BUYER)
-    sellerMeetings      Meetings[]        @relation("sellerMeetings")
-    customerMeetings    Meetings[]        @relation("customerMeetings")
-    customerReview      ProfileReviews[]  @relation("customerReviews")
-    sellerProfileReview ProfileReviews[]  @relation("sellerProfileReviews")
-    verification        UserVerification?
-    userProfile         UserProfile?
-    listings            Listings[]
-    locationId          Int?              @unique
-    location            Location?         @relation(fields: [locationId], references: [id])
-    wishList            Wishlist[]
-    messages            Messages[]
-    roomMembers         RoomMembers[]
-    averageRating       Float?
-    url                 String?           @default("https://api.pupify.ca/api/v1/bucket/files/1726049013194-743688994.png")
-    deviceToken         String?
-    phoneNumber         String?
-    coverImage          String            @default("https://api.pupify.ca/api/v1/bucket/files/1726049012932-323188758.png")
-    createdAt           DateTime          @default(now())
-    updatedAt           DateTime          @updatedAt
-    sentConnections     Connection[]      @relation("SenderConnections")
-    receivedConnections Connection[]      @relation("ReceiverConnections")
+    id           Int               @id @default(autoincrement())
+    email        String            @unique
+    fullName     String?
+    password     String
+    role         Role              @default(BUYER)
+    verification UserVerification?
+    createdAt    DateTime          @default(now())
+    updatedAt    DateTime          @updatedAt
 
     @@schema("auth")
 }
@@ -41,9 +23,8 @@ model UserVerification {
 }
 
 enum Role {
-    BUYER
+    USER
     ADMIN
-    SELLER
 
     @@schema("auth")
 }

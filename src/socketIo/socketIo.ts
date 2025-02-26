@@ -1,7 +1,6 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import http from 'http';
 import { authentification } from "../middlewares/auth.socket.authentification";
-import ChatController from '../controllers/chat';
 import 'socket.io';
 declare module 'socket.io' {
     interface Socket {
@@ -49,7 +48,6 @@ const setupSocketServer = (app: any) => {
         /* ========== Join New Chat With Seller *===============*/
         socket.on('join_chat_room', (data) => {
             if (socket.user) {
-                ChatController.joinNewChatWithSeller(io, socket, data);
             } else {
                 throw new Error("Authentication error");
 
@@ -59,7 +57,6 @@ const setupSocketServer = (app: any) => {
         /* ========== Send Message Into The Room *==============*/
         socket.on('send_message', (data) => {
             if (socket.user) {
-                ChatController.sendMessageIntoTheRoom(io, socket, data);
             } else {
                 throw new Error("Authentication error");
             }
@@ -68,7 +65,6 @@ const setupSocketServer = (app: any) => {
         /* ========= Open Chat Window =========*/
         socket.on('open_chat_window', (data) => {
             if (socket.user) {
-                ChatController.getAllMessageByRoomId(io, socket, data);
             } else {
                 throw new Error("Authentication error");
             }
@@ -78,7 +74,6 @@ const setupSocketServer = (app: any) => {
         /* ======= Get All Chats =========*/
         socket.on('get_all_chats', () => {
             if (socket.user) {
-                ChatController.getAllChatsByUserId(io, socket);
             } else {
                 throw new Error("Authentication error");
             }

@@ -2,9 +2,9 @@ import { Role } from "@prisma/client";
 import ProfileTypeRepository from "../profile_types/profileTypeRepository";
 import { UserRepository } from "./userRepository";
 import { AuthRequest } from "../../types/interfaces";
-import AuthRepository from "../auth/authRepository";
+import AuthRepository from "../auth/auth.repository";
 import UserModel from "../../models/userModel";
-import AuthService from "../auth/authService";
+import AuthService from "../auth/auth.service";
 import { OTPGenerator } from "../../helpers"
 import { Encrypt } from "../../helpers";
 import EmailService from "../../services/email";

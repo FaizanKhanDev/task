@@ -1,6 +1,6 @@
 import { prisma } from "@/prismaClient"
 import { Encrypt, OTPGenerator } from "../../helpers";
-import AuthRepository from "../../modules/auth/authRepository";
+import AuthRepository from "./auth.repository";
 import bcrypt from 'bcrypt'
 import transporter from "../../config/email/nodemailerConfiguration";
 import { Role } from "@prisma/client";
@@ -14,10 +14,6 @@ class AuthService {
             password: string,
             fullName: string,
             role: Role,
-            url: string | null,
-            deviceToken: string,
-            coverImage: string | null,
-
 
         ): Promise<any> {
         try {
@@ -25,37 +21,25 @@ class AuthService {
             let hashedPassword = await Encrypt.encryptpass(password);
 
             /* -----    Create User     ----- */
-            const newUser = await AuthRepository.createUser(email, hashedPassword, fullName, role, url, deviceToken, coverImage);
+            const newUser = await AuthRepository.createUser(email, hashedPassword, fullName, role);
             if (!newUser || !newUser.verification) {
                 return null;
             }
-            console.log("newUser.verification.resetOtp", newUser.verification.resetOtp)
+
+            /* NOTE CURRENTLY I HAVEN'T ANY EMAIL AND IT'S APPLESS PASSWORD FOR EMAIL SENDIND -----*/
+            console.log("newUser.verification.resetOtp", newUser.verification.resetOtp);
+
+            return newUser;
+            /* NOTE CURRENTLY I HAVEN'T ANY EMAIL AND IT'S APPLESS PASSWORD FOR EMAIL SENDIND -----*/
             /* ================ Verification Email Configuration  ================ */
             let info = await transporter.sendMail({
                 from: process.env.EMAIL_FROM,
                 to: email,
                 subject: 'Email Verification',
                 /* ================ Email Template ================ */
-                html: `
-                    <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-                    <div style="margin:50px auto;width:70%;padding:20px 0">
-                    <div style="border-bottom:1px solid #eee">
-                        <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Pupify App</a>
-                    </div>
-                    <p style="font-size:1.1em">Hi, ${fullName} </p>
-                    <p>Thank you for Joining Pupify App. Use the following OTP to complete your Sign Up procedures. OTP is valid for 15 minutes</p>
-                    <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${newUser.verification.resetOtp}</h2>
-                    <p style="font-size:0.9em;">Regards,<br />Pupify App</p>
-                    <hr style="border:none;border-top:1px solid #eee" />
-                    <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
-                        <p>Pupify App</p>
-                    </div>
-                    </div>
-                </div>
-             `,
+                html: "",
             });
 
-            return newUser;
         } catch (error: any) {
             throw new Error(`Failed to create user: ${error.message}`);
         }
@@ -97,19 +81,19 @@ class AuthService {
                     <div style="font-family: Helvetica, Arial, sans-serif; min-width: 1000px; overflow: auto; line-height: 1.6;">
                         <div style="margin: 50px auto; width: 70%; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                             <div style="border-bottom: 2px solid #00466a; padding-bottom: 10px; margin-bottom: 20px;">
-                                <a href="" style="font-size: 1.6em; color: #00466a; text-decoration: none; font-weight: bold;">Pupify App</a>
+                                <a href="" style="font-size: 1.6em; color: #00466a; text-decoration: none; font-weight: bold;">Task App</a>
                             </div>
                             <p style="font-size: 1.2em; margin-bottom: 20px;">Dear ${user.fullName},</p>
-                            <p style="font-size: 1.1em; margin-bottom: 20px;">Thank you for your interest in logging into Pupify App. To proceed, please verify your email address by using the OTP (One-Time Password) provided below. This step is necessary to complete your login process.</p>
+                            <p style="font-size: 1.1em; margin-bottom: 20px;">Thank you for your interest in logging into Task App. To proceed, please verify your email address by using the OTP (One-Time Password) provided below. This step is necessary to complete your login process.</p>
                             <h2 style="background: #00466a; color: #fff; padding: 15px; border-radius: 4px; text-align: center; font-size: 1.5em; margin: 0;">
                                 ${generateOTP}
                             </h2>
                             <p style="font-size: 1em; margin-top: 20px;">Please note that this OTP is valid for 15 minutes. If you did not attempt to log in, you may disregard this email.</p>
                             <p style="font-size: 1em; margin-top: 20px;">If you have any questions or need further assistance, feel free to contact our support team.</p>
-                            <p style="font-size: 1em; margin-top: 20px;">Best regards,<br />The Pupify Team</p>
+                            <p style="font-size: 1em; margin-top: 20px;">Best regards,<br />The Task Team</p>
                             <hr style="border: none; border-top: 1px solid #ddd; margin-top: 20px;" />
                             <div style="float: right; padding: 8px 0; color: #aaa; font-size: 0.9em;">
-                                <p>Pupify App</p>
+                                <p>Task App</p>
                             </div>
                         </div>
                     </div>

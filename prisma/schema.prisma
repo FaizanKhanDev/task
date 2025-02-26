@@ -392,10 +392,10 @@ model User {
     messages            Messages[]
     roomMembers         RoomMembers[]
     averageRating       Float?
-    url                 String?           @default("https://api.pupify.ca/api/v1/bucket/files/1726049013194-743688994.png")
+    url                 String?           @default("https://api.Task.ca/api/v1/bucket/files/1726049013194-743688994.png")
     deviceToken         String?
     phoneNumber         String?
-    coverImage          String            @default("https://api.pupify.ca/api/v1/bucket/files/1726049012932-323188758.png")
+    coverImage          String            @default("https://api.Task.ca/api/v1/bucket/files/1726049012932-323188758.png")
     createdAt           DateTime          @default(now())
     updatedAt           DateTime          @updatedAt
     sentConnections     Connection[]      @relation("SenderConnections")
