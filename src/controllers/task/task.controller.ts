@@ -185,4 +185,4 @@ class TaskController {
 
 }
 
-export default TaskController 
+export default TaskController;
