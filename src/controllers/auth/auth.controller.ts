@@ -6,7 +6,6 @@ import { prisma } from "../../prismaClient"
 import AuthService from "../../modules/auth/auth.service";
 import AuthRepository from "../../modules/auth/auth.repository";
 import { AuthRequest } from "../../interfaces";
-import UserServices from "../../modules/user/userService";
 import emailExistence from 'email-existence'
 import validator from 'validator';
 

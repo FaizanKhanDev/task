@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import upload from './middlewares/upload.middlware';
 import { Request, Response } from 'express';
 import { AuthRoutes } from './routes/v1/auth/auth.routes';
-import { UserRoutes } from './routes/v1/user';
 import cors from 'cors';
 import './module-alias'
 import path from 'path';
@@ -75,7 +74,6 @@ app.get('/api/v1', (req, res) => {
 
 /* ================= Routes ================= */
 app.use('/api/v1/auth', AuthRoutes);
-app.use('/api/v1/user', UserRoutes);
 
 /* ====== Not Found Routes ====== */
 app.get("*", (req: Request, res: Response) => {
